@@ -2,6 +2,7 @@ import re
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from . import models
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -26,3 +27,10 @@ class UserSerializer(serializers.ModelSerializer):
             user.save()
             return user
         raise(serializers.ValidationError('Please provide username, email, password and password confirmation'))
+
+
+class TimeBudgetSerializer(serializers.ModelSerializer):
+    time_budget_owner = serializers.ReadOnlyField(source='time_budget_owner.username')
+    class Meta:
+        model = models.TimeBudgetModel
+        fields = ['time_budget_owner', 'time_budget_name']
