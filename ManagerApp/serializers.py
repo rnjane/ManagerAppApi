@@ -30,7 +30,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TimeBudgetSerializer(serializers.ModelSerializer):
-    time_budget_owner = serializers.ReadOnlyField(source='time_budget_owner.username')
+    owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = models.TimeBudgetModel
-        fields = ['time_budget_owner', 'time_budget_name']
+        fields = ['owner', 'time_budget_name']
+
+
+class MoneyBudgetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = models.MoneyBudgetModel
+        fields = ['owner', 'money_budget_name']
