@@ -28,31 +28,31 @@ class UserSignIn(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST)
 
 
-class TimeBudgetListCreateView(generics.ListCreateAPIView):
+class TimeBudgetModelListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
-    serializer_class = serializers.TimeBudgetSerializer
+    serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
-class TimeBudgetDetails(generics.RetrieveUpdateDestroyAPIView):
+class TimeBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
-    serializer_class = serializers.TimeBudgetSerializer
+    serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
 
 
-class MoneyBudgetListCreateView(generics.ListCreateAPIView):
+class MoneyBudgetModelListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
-    serializer_class = serializers.MoneyBudgetSerializer
+    serializer_class = serializers.MoneyBudgetModelSerializer
     queryset = models.MoneyBudgetModel.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
-class MoneyBudgetDetails(generics.RetrieveUpdateDestroyAPIView):
+class MoneyBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
-    serializer_class = serializers.MoneyBudgetSerializer
+    serializer_class = serializers.MoneyBudgetModelSerializer
     queryset = models.MoneyBudgetModel.objects.all()

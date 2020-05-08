@@ -50,51 +50,51 @@ class UsersTestCase(BaseViewTest):
 
 class TimeBudgetsTestCase(BaseViewTest):
     def test_user_can_create_a_time_budget(self):
-        response = self.client.post(reverse('time_budget'), {'time_budget_name': 'testtimebudget'})
+        response = self.client.post(reverse('time_budget_model'), {'time_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_user_can_view_all_time_budgets(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user, _quantity=10)
-        response = self.client.get(reverse('time_budget'))
+        response = self.client.get(reverse('time_budget_model'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 10)
 
     def test_user_can_view_a_time_budget(self):
         mommy.make(models.TimeBudgetModel, time_budget_name='testmodelbudget', owner=self.testing_user)
-        response = self.client.get(reverse('time_budget_details', kwargs={'pk': 1}))
+        response = self.client.get(reverse('time_budget_model_details', kwargs={'pk': 1}))
         self.assertEqual('testmodelbudget', response.data['time_budget_name'])
 
     def test_user_can_update_a_time_budget(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user)
-        response = self.client.patch(reverse('time_budget_details', kwargs={'pk': 1}), {'time_budget_name': 'new time budget name'})
+        response = self.client.patch(reverse('time_budget_model_details', kwargs={'pk': 1}), {'time_budget_name': 'new time budget name'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('new time budget name', response.data['time_budget_name'])
 
     def test_user_can_delete_a_budget(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user)
-        response = self.client.delete(reverse('time_budget_details', kwargs={'pk': 1}))
+        response = self.client.delete(reverse('time_budget_model_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data, None)
 
     def test_time_budget_operations_require_authentication(self):
         client2 = APIClient()
-        response = client2.post(reverse('time_budget'), {'time_budget_name': 'testtimebudget'})
+        response = client2.post(reverse('time_budget_model'), {'time_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_time_budget_operations_require_authorisation(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user)
-        response = self.client2.get(reverse('time_budget_details', kwargs={'pk': 1}))
+        response = self.client2.get(reverse('time_budget_model_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class MonetaryBudgetsTestCase(BaseViewTest):
     def test_user_can_create_a_money_budget(self):
-        response = self.client.post(reverse('money_budget'), {'money_budget_name': 'testtimebudget'})
+        response = self.client.post(reverse('money_budget_model'), {'money_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_user_can_view_all_money_budgets(self):
         mommy.make(models.MoneyBudgetModel, owner=self.testing_user, _quantity=10)
-        response = self.client.get(reverse('money_budget'))
+        response = self.client.get(reverse('money_budget_model'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 10)
 
@@ -117,7 +117,7 @@ class MonetaryBudgetsTestCase(BaseViewTest):
 
     def test_money_budget_operations_require_authentication(self):
         client2 = APIClient()
-        response = client2.post(reverse('money_budget'), {'money_budget_name': 'testtimebudget'})
+        response = client2.post(reverse('money_budget_model'), {'money_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_money_budget_operations_require_authorisation(self):
