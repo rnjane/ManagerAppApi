@@ -29,14 +29,14 @@ class UserSerializer(serializers.ModelSerializer):
         raise(serializers.ValidationError('Please provide username, email, password and password confirmation'))
 
 
-class TimeBudgetSerializer(serializers.ModelSerializer):
+class TimeBudgetModelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = models.TimeBudgetModel
         fields = ['owner', 'time_budget_name']
 
 
-class MoneyBudgetSerializer(serializers.ModelSerializer):
+class MoneyBudgetModelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = models.MoneyBudgetModel

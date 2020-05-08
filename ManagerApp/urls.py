@@ -8,10 +8,10 @@ urlpatterns = [
     path('signin/', views.UserSignIn.as_view(), name='signin'),
 
     #Time budget operations
-    path('time-budget/', views.TimeBudgetListCreateView.as_view(), name='time_budget'), #this url covers for creating and viewing all time budgets
-    path('time-budget/<int:pk>/', views.TimeBudgetDetails.as_view(), name='time_budget_details'), #this url covers for edit, delete and view single time budget
+    path('time-budget/', views.TimeBudgetModelListCreateView.as_view(), name='time_budget_model'), #this url covers for creating and viewing all time budgets
+    path('time-budget/<int:pk>/', views.TimeBudgetModelDetails.as_view(), name='time_budget_model_details'), #this url covers for edit, delete and view single time budget
 
     #Money budget operations
-    path('money-budget/', views.MoneyBudgetListCreateView.as_view(), name='money_budget'), #this url covers for creating and viewing all money budgets
-    path('money-budget/<int:pk>/', views.MoneyBudgetDetails.as_view(), name='money_budget_details'), #this url covers for edit, delete and view single money budget
+    path('money-budget/', views.MoneyBudgetModelListCreateView.as_view(), name='money_budget_model'), #this url covers for creating and viewing all money budgets
+    path('money-budget/<int:pk>/', views.MoneyBudgetModelDetails.as_view(), name='money_budget_details'), #this url covers for edit, delete and view single money budget
 ]
