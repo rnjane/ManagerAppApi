@@ -40,4 +40,11 @@ class MoneyBudgetModelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = models.MoneyBudgetModel
-        fields = ['owner', 'money_budget_name']
+        fields = ['owner', 'money_budget_name', 'model_incomes']
+
+
+class ModelIncomeSerializer(serializers.ModelSerializer):
+    # budget_model = serializers.ReadOnlyField(source='model_budget.money_budget_name')
+    class Meta:
+        model = models.ModelIncome
+        fields = ['model_budget', 'model_income_name']
