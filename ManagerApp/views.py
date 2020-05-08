@@ -34,10 +34,25 @@ class TimeBudgetListCreateView(generics.ListCreateAPIView):
     queryset = models.TimeBudgetModel.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(time_budget_owner=self.request.user)
+        serializer.save(owner=self.request.user)
 
 
 class TimeBudgetDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
     serializer_class = serializers.TimeBudgetSerializer
     queryset = models.TimeBudgetModel.objects.all()
+
+
+class MoneyBudgetListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    serializer_class = serializers.MoneyBudgetSerializer
+    queryset = models.MoneyBudgetModel.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class MoneyBudgetDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    serializer_class = serializers.MoneyBudgetSerializer
+    queryset = models.MoneyBudgetModel.objects.all()
