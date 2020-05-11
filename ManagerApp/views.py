@@ -119,3 +119,25 @@ class ModelExpenseDetails(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         queryset = self.queryset.filter(owner=self.request.user)
         return queryset
+
+
+class TimeSlotModelListCreate(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.TimeSlotModelSerializer
+    queryset = models.TimeSlotModel.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+class TimeSlotModelDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.TimeSlotModelSerializer
+    queryset = models.TimeSlotModel.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset

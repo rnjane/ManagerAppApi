@@ -72,3 +72,20 @@ class ModelExpense(BaseModel):
 
     def get_absolute_url(self):
         return reverse("model_expense_detail", kwargs={"pk": self.pk})
+
+
+class TimeSlotModel(BaseModel):
+    time_slot_name = models.CharField(_("Time Slot Model Name"), max_length=50)
+    model_time_budget = models.ForeignKey("TimeBudgetModel", related_name='time_slot_models', verbose_name=_("Time Slot Model"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='time_slot_model', verbose_name=_("Time Slot Model Owner"), on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Time slot model")
+        verbose_name_plural = _("Time Slot Model")
+        ordering = ['date_created']
+
+    def __str__(self):
+        return self.time_slot_name
+
+    def get_absolute_url(self):
+        return reverse("time_slot_model_detail", kwargs={"pk": self.pk})
