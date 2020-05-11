@@ -257,3 +257,14 @@ class TestTimeSlotModel(BaseViewTest):
         response2 = self.client.get(reverse('time_slot_model_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+
+class UserBudgetsTests(BaseViewTest):
+    def test_user_can_create_a_budget(self):
+        pass
+
+    def test_new_budget_follows_current_model(self):
+        pass
+
+    def test_user_can_mark_budget_model_active(self):
+        pass

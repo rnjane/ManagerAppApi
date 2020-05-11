@@ -25,5 +25,19 @@ urlpatterns = [
 
     #time slot model urls
     path('time-slot-model/', views.TimeSlotModelListCreate.as_view(), name='time_slot_model_list_create'),
-    path('time-slot-model/<int:pk>/', views.TimeSlotModelDetails.as_view(), name='time_slot_model_details')
+    path('time-slot-model/<int:pk>/', views.TimeSlotModelDetails.as_view(), name='time_slot_model_details'),
+
+    #budgets urls
+    path('budgets/', views.BudgetsListCreate.as_view(), name='budgets'),
+    path('budget-details/<int:pk>/', views.BudgetDetails.as_view(), name='budget_details'),
+
+    #budget incomes & expenses
+    path('budget-income/', views.BudgetIncome.as_view(), name='budget_income'),
+    path('budget-income-details/', views.BudgetIncomeDetails.as_view(), name='budget_income_details'),
+    path('budget-expense/', views.BudgetExpense.as_view(), name='budget_expense'),
+    path('budget-expense-details/', views.BudgetExpenseDetails.as_view(), name='budget_expense_details'),
+
+    #income & expenses categories
+    path('income-categories/', views.IncomeCategories.as_view(), name='income_categories'),
+    path('expense-categories/', views.ExpenseCategories.as_view(), name='expense_categories')
 ]

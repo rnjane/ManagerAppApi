@@ -35,17 +35,14 @@ class TimeBudgetModelSerializer(serializers.ModelSerializer):
         model = models.TimeBudgetModel
         fields = ['owner', 'time_budget_name']
 
-class ModelBudgetForeignKey(serializers.PrimaryKeyRelatedField):
-    def get_queryset(self):
-        return models.MoneyBudgetModel.objects.filter(owner=self.context['request'].user)
-
 class MoneyBudgetModelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     model_incomes = serializers.StringRelatedField(read_only=True, many=True)
+    model_expenses = serializers.StringRelatedField(read_only=True, many=True)
     
     class Meta:
         model = models.MoneyBudgetModel
-        fields = ['owner', 'money_budget_name', 'model_incomes']
+        fields = ['owner', 'money_budget_name', 'model_incomes', 'model_expenses']
 
 
 class ModelIncomeSerializer(serializers.ModelSerializer):
@@ -64,3 +61,24 @@ class TimeSlotModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.TimeSlotModel
         fields = ['time_slot_name', 'model_time_budget']
+
+
+class BudgetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    incomes = serializers.StringRelatedField(read_only=True, many=True)
+    expenses = serializers.StringRelatedField(read_only=True, many=True)
+    class Meta:
+        model = models.Budget
+        fields = ['budget_name', 'owner', 'budget_model', 'incomes', 'expenses']
+
+
+class BudgetExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BudgetExpense
+        fields = ('name', 'amount', 'category', 'description', 'date_created', 'budget')
+
+
+class BudgetIncomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.BudgetIncome
+        fields = ('name', 'amount', 'category', 'description', 'date_created', 'budget')
