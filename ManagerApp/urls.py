@@ -21,5 +21,9 @@ urlpatterns = [
 
     #Model expense operations
     path('model-expense/', views.ModelExpenseListCreateView.as_view(), name='model_expense_list_create'), #this url covers for creating and viewing all model expenses
-    path('model-expense/<int:pk>/', views.ModelExpenseDetails.as_view(), name='model_expense_details') #this url covers for delete, update and single view of all model expenses
+    path('model-expense/<int:pk>/', views.ModelExpenseDetails.as_view(), name='model_expense_details'), #this url covers for delete, update and single view of all model expenses
+
+    #time slot model urls
+    path('time-slot-model/', views.TimeSlotModelListCreate.as_view(), name='time_slot_model_list_create'),
+    path('time-slot-model/<int:pk>/', views.TimeSlotModelDetails.as_view(), name='time_slot_model_details')
 ]

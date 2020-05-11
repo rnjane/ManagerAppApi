@@ -84,7 +84,9 @@ class TimeBudgetModelTestCase(BaseViewTest):
     def test_time_budget_operations_require_authorisation(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user)
         response = self.client2.get(reverse('time_budget_model_details', kwargs={'pk': 1}))
+        response2 = self.client.get(reverse('time_budget_model_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
 
 class MonetaryBudgetModelTestCase(BaseViewTest):
@@ -124,6 +126,8 @@ class MonetaryBudgetModelTestCase(BaseViewTest):
         mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
         response = self.client2.get(reverse('money_budget_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response2 = self.client.get(reverse('money_budget_details', kwargs={'pk': 1}))
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
 
 class TestMoneyBudgetModelIncome(BaseViewTest):
@@ -149,7 +153,7 @@ class TestMoneyBudgetModelIncome(BaseViewTest):
 
     def test_user_can_delete_a_model_income(self):
         model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
-        mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget)
         response = self.client.delete(reverse('model_income_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data, None)
@@ -165,6 +169,8 @@ class TestMoneyBudgetModelIncome(BaseViewTest):
         model_income = mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget)
         response = self.client2.get(reverse('model_income_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response2 = self.client.get(reverse('model_income_details', kwargs={'pk': 1}))
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
 
 
 class TestMoneyBudgetModelExpense(BaseViewTest):
@@ -183,14 +189,14 @@ class TestMoneyBudgetModelExpense(BaseViewTest):
 
     def test_user_can_update_a_model_expense(self):
         model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
-        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget)
         response = self.client.patch(reverse('model_expense_details', kwargs={'pk': 1}), {'model_expense_name': 'new model expense name'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual('new model expense name', response.data['model_expense_name'])
 
     def test_user_can_delete_a_model_expense(self):
         model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
-        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget)
         response = self.client.delete(reverse('model_expense_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(response.data, None)
@@ -206,3 +212,48 @@ class TestMoneyBudgetModelExpense(BaseViewTest):
         model_expense = mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget)
         response = self.client2.get(reverse('model_expense_details', kwargs={'pk': 1}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        response2 = self.client.get(reverse('model_expense_details', kwargs={'pk': 1}))
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)
+
+
+class TestTimeSlotModel(BaseViewTest):
+    def test_user_can_create_a_time_slot_model(self):
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        response = self.client.post(reverse('time_slot_model_list_create'), {'time_slot_name': 'test time slot model', 'model_time_budget': model_time_budget.id})
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+
+    def test_user_can_view_all_time_slot_models(self):
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        mommy.make(models.TimeSlotModel, owner=self.testing_user, model_time_budget = model_time_budget, _quantity=10)
+        response = self.client.get(reverse('time_slot_model_list_create'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 10)
+
+    def test_user_can_update_a_model_expense(self):
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        mommy.make(models.TimeSlotModel, owner=self.testing_user, model_time_budget=model_time_budget)
+        response = self.client.patch(reverse('time_slot_model_details', kwargs={'pk': 1}), {'time_slot_name': 'new model time slot name'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('new model time slot name', response.data['time_slot_name'])
+
+    def test_user_can_delete_a_model_time_slot(self):
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        mommy.make(models.TimeSlotModel, owner=self.testing_user, model_time_budget=model_time_budget)
+        response = self.client.delete(reverse('time_slot_model_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data, None)
+
+    def test_model_expense_operations_require_authentication(self):
+        client2 = APIClient()
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        response = client2.post(reverse('time_slot_model_list_create'), {'time_slot_name': 'test model time slot', 'model_time_budget': model_time_budget.id})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_money_budget_operations_require_authorisation(self):
+        model_time_budget = mommy.make(models.TimeBudgetModel, owner=self.testing_user)
+        model_time_slot = mommy.make(models.TimeSlotModel, owner=self.testing_user, model_time_budget=model_time_budget)
+        response = self.client2.get(reverse('time_slot_model_details', kwargs={'pk': 1}))
+        response2 = self.client.get(reverse('time_slot_model_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response2.status_code, status.HTTP_200_OK)

@@ -58,3 +58,9 @@ class ModelExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ModelExpense
         fields = ['model_budget', 'model_expense_name']
+
+
+class TimeSlotModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.TimeSlotModel
+        fields = ['time_slot_name', 'model_time_budget']
