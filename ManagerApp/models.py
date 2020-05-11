@@ -42,7 +42,8 @@ class MoneyBudgetModel(BaseModel):
 
 class ModelIncome(BaseModel):
     model_income_name = models.CharField(_("Model Income Name"), max_length=50)
-    model_budget = models.ForeignKey("ManagerApp.MoneyBudgetModel", related_name='model_incomes', verbose_name=_("Budget Model"), on_delete=models.CASCADE)
+    model_budget = models.ForeignKey("MoneyBudgetModel", related_name='model_incomes', verbose_name=_("Budget Model"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='model_income', verbose_name=_("Model Income Owner"), on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = _("Model Income")

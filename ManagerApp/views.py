@@ -30,7 +30,7 @@ class UserSignIn(views.APIView):
 
 
 class TimeBudgetModelListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
 
@@ -43,7 +43,7 @@ class TimeBudgetModelListCreateView(generics.ListCreateAPIView):
 
 
 class TimeBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
 
@@ -53,7 +53,7 @@ class TimeBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MoneyBudgetModelListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.MoneyBudgetModelSerializer
     queryset = models.MoneyBudgetModel.objects.all()
 
@@ -66,7 +66,7 @@ class MoneyBudgetModelListCreateView(generics.ListCreateAPIView):
 
 
 class MoneyBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.MoneyBudgetModelSerializer
     queryset = models.MoneyBudgetModel.objects.filter()
 
@@ -76,7 +76,20 @@ class MoneyBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ModelIncomeListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly, )
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelIncomeSerializer
+    queryset = models.ModelIncome.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelIncomeDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.ModelIncomeSerializer
     queryset = models.ModelIncome.objects.all()
 
