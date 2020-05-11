@@ -96,3 +96,26 @@ class ModelIncomeDetails(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         queryset = self.queryset.filter(owner=self.request.user)
         return queryset
+
+
+class ModelExpenseListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelExpenseSerializer
+    queryset = models.ModelExpense.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelExpenseDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelExpenseSerializer
+    queryset = models.ModelExpense.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset

@@ -55,3 +55,20 @@ class ModelIncome(BaseModel):
 
     def get_absolute_url(self):
         return reverse("model_income_detail", kwargs={"pk": self.pk})
+
+
+class ModelExpense(BaseModel):
+    model_expense_name = models.CharField(_("Model Expense Name"), max_length=50)
+    model_budget = models.ForeignKey("MoneyBudgetModel", related_name='model_expenses', verbose_name=_("Budget Model"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='model_expense', verbose_name=_("Model Expense Owner"), on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Model Expense")
+        verbose_name_plural = _("Model Expense")
+        ordering = ['date_created']
+
+    def __str__(self):
+        return self.model_expense_name
+
+    def get_absolute_url(self):
+        return reverse("model_expense_detail", kwargs={"pk": self.pk})

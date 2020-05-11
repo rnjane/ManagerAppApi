@@ -39,11 +39,6 @@ class ModelBudgetForeignKey(serializers.PrimaryKeyRelatedField):
     def get_queryset(self):
         return models.MoneyBudgetModel.objects.filter(owner=self.context['request'].user)
 
-class ModelIncomeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.ModelIncome
-        fields = ['model_budget', 'model_income_name']
-
 class MoneyBudgetModelSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     model_incomes = serializers.StringRelatedField(read_only=True, many=True)
@@ -51,3 +46,15 @@ class MoneyBudgetModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.MoneyBudgetModel
         fields = ['owner', 'money_budget_name', 'model_incomes']
+
+
+class ModelIncomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ModelIncome
+        fields = ['model_budget', 'model_income_name']
+
+
+class ModelExpenseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ModelExpense
+        fields = ['model_budget', 'model_expense_name']

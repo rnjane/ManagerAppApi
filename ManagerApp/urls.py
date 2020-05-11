@@ -17,5 +17,9 @@ urlpatterns = [
 
     #Model income operations
     path('model-income/', views.ModelIncomeListCreateView.as_view(), name='model_income_list_create'), #this url covers for creating and viewing all model incomes
-    path('model-income/<int:pk>/', views.ModelIncomeDetails.as_view(), name='model_income_details') #this url covers for delete, update and single view of all model incomes
+    path('model-income/<int:pk>/', views.ModelIncomeDetails.as_view(), name='model_income_details'), #this url covers for delete, update and single view of all model incomes
+
+    #Model expense operations
+    path('model-expense/', views.ModelExpenseListCreateView.as_view(), name='model_expense_list_create'), #this url covers for creating and viewing all model expenses
+    path('model-expense/<int:pk>/', views.ModelExpenseDetails.as_view(), name='model_expense_details') #this url covers for delete, update and single view of all model expenses
 ]
