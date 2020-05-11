@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 from rest_framework import permissions, generics, response, status, authtoken, views
 from . import serializers, models, permisions
 
@@ -29,30 +30,92 @@ class UserSignIn(views.APIView):
 
 
 class TimeBudgetModelListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
 class TimeBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.TimeBudgetModelSerializer
     queryset = models.TimeBudgetModel.objects.all()
 
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
 
 class MoneyBudgetModelListCreateView(generics.ListCreateAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.MoneyBudgetModelSerializer
     queryset = models.MoneyBudgetModel.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
 class MoneyBudgetModelDetails(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (permissions.IsAuthenticated, permisions.AllowOwnerOnly)
+    permission_classes = (permissions.IsAuthenticated, )
     serializer_class = serializers.MoneyBudgetModelSerializer
-    queryset = models.MoneyBudgetModel.objects.all()
+    queryset = models.MoneyBudgetModel.objects.filter()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelIncomeListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelIncomeSerializer
+    queryset = models.ModelIncome.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelIncomeDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelIncomeSerializer
+    queryset = models.ModelIncome.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelExpenseListCreateView(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelExpenseSerializer
+    queryset = models.ModelExpense.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset
+
+
+class ModelExpenseDetails(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAuthenticated, )
+    serializer_class = serializers.ModelExpenseSerializer
+    queryset = models.ModelExpense.objects.all()
+
+    def get_queryset(self):
+        queryset = self.queryset.filter(owner=self.request.user)
+        return queryset

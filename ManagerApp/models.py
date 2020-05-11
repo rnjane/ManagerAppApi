@@ -27,7 +27,7 @@ class TimeBudgetModel(BaseModel):
 
 class MoneyBudgetModel(BaseModel):
     money_budget_name = models.CharField(_("Money Budget Name"), max_length=50)
-    owner = models.ForeignKey(User, related_name='moneybudget', verbose_name=_("Money Budget Owner"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='model_budget', verbose_name=_("Money Budget Owner"), on_delete=models.CASCADE)
     class Meta:
         verbose_name = _("Money Budget")
         verbose_name_plural = _("Money Budgets")
@@ -38,3 +38,37 @@ class MoneyBudgetModel(BaseModel):
 
     def get_absolute_url(self):
         return reverse("money_budget_detail", kwargs={"pk": self.pk})
+
+
+class ModelIncome(BaseModel):
+    model_income_name = models.CharField(_("Model Income Name"), max_length=50)
+    model_budget = models.ForeignKey("MoneyBudgetModel", related_name='model_incomes', verbose_name=_("Budget Model"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='model_income', verbose_name=_("Model Income Owner"), on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Model Income")
+        verbose_name_plural = _("Model Income")
+        ordering = ['date_created']
+
+    def __str__(self):
+        return self.model_income_name
+
+    def get_absolute_url(self):
+        return reverse("model_income_detail", kwargs={"pk": self.pk})
+
+
+class ModelExpense(BaseModel):
+    model_expense_name = models.CharField(_("Model Expense Name"), max_length=50)
+    model_budget = models.ForeignKey("MoneyBudgetModel", related_name='model_expenses', verbose_name=_("Budget Model"), on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, related_name='model_expense', verbose_name=_("Model Expense Owner"), on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = _("Model Expense")
+        verbose_name_plural = _("Model Expense")
+        ordering = ['date_created']
+
+    def __str__(self):
+        return self.model_expense_name
+
+    def get_absolute_url(self):
+        return reverse("model_expense_detail", kwargs={"pk": self.pk})

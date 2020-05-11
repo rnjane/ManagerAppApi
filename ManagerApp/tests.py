@@ -48,7 +48,7 @@ class UsersTestCase(BaseViewTest):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class TimeBudgetsTestCase(BaseViewTest):
+class TimeBudgetModelTestCase(BaseViewTest):
     def test_user_can_create_a_time_budget(self):
         response = self.client.post(reverse('time_budget_model'), {'time_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -84,10 +84,10 @@ class TimeBudgetsTestCase(BaseViewTest):
     def test_time_budget_operations_require_authorisation(self):
         mommy.make(models.TimeBudgetModel, owner=self.testing_user)
         response = self.client2.get(reverse('time_budget_model_details', kwargs={'pk': 1}))
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class MonetaryBudgetsTestCase(BaseViewTest):
+class MonetaryBudgetModelTestCase(BaseViewTest):
     def test_user_can_create_a_money_budget(self):
         response = self.client.post(reverse('money_budget_model'), {'money_budget_name': 'testtimebudget'})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -123,4 +123,86 @@ class MonetaryBudgetsTestCase(BaseViewTest):
     def test_money_budget_operations_require_authorisation(self):
         mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
         response = self.client2.get(reverse('money_budget_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class TestMoneyBudgetModelIncome(BaseViewTest):
+    def test_user_can_create_model_income(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        model_income_response = self.client.post(reverse('model_income_list_create'), {'model_income_name': 'test model income', 'model_budget': model_budget.id, 'owner':self.testing_user})
+        self.assertEqual(model_income_response.status_code, status.HTTP_201_CREATED)
+        
+
+    def test_user_can_view_all_model_incomes(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        model_income_view_response = self.client.get(reverse('model_income_list_create'))
+        self.assertEqual(model_income_view_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(model_income_view_response.data), 10)
+
+    def test_user_can_update_a_model_income(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        response = self.client.patch(reverse('model_income_details', kwargs={'pk': 1}), {'model_income_name': 'new model income name'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('new model income name', response.data['model_income_name'])
+
+    def test_user_can_delete_a_model_income(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        response = self.client.delete(reverse('model_income_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data, None)
+
+    def test_model_income_operations_require_authentication(self):
+        client2 = APIClient()
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        response = client2.post(reverse('model_income_list_create'), {'model_income_name': 'test model income', 'model_budget': model_budget.id, 'owner':self.testing_user})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_money_budget_operations_require_authorisation(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        model_income = mommy.make(models.ModelIncome, owner=self.testing_user, model_budget = model_budget)
+        response = self.client2.get(reverse('model_income_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class TestMoneyBudgetModelExpense(BaseViewTest):
+    def test_user_can_create_model_expense(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        model_expense_response = self.client.post(reverse('model_expense_list_create'), {'model_expense_name': 'test model expense', 'model_budget': model_budget.id, 'owner':self.testing_user})
+        self.assertEqual(model_expense_response.status_code, status.HTTP_201_CREATED)
+        
+
+    def test_user_can_view_all_model_expenses(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        model_expense_view_response = self.client.get(reverse('model_expense_list_create'))
+        self.assertEqual(model_expense_view_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(model_expense_view_response.data), 10)
+
+    def test_user_can_update_a_model_expense(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        response = self.client.patch(reverse('model_expense_details', kwargs={'pk': 1}), {'model_expense_name': 'new model expense name'})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual('new model expense name', response.data['model_expense_name'])
+
+    def test_user_can_delete_a_model_expense(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget, _quantity=10)
+        response = self.client.delete(reverse('model_expense_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(response.data, None)
+
+    def test_model_expense_operations_require_authentication(self):
+        client2 = APIClient()
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        response = client2.post(reverse('model_expense_list_create'), {'model_expense_name': 'test model expense', 'model_budget': model_budget.id, 'owner':self.testing_user})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_money_budget_operations_require_authorisation(self):
+        model_budget = mommy.make(models.MoneyBudgetModel, owner=self.testing_user)
+        model_expense = mommy.make(models.ModelExpense, owner=self.testing_user, model_budget = model_budget)
+        response = self.client2.get(reverse('model_expense_details', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
